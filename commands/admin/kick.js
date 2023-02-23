@@ -1,4 +1,3 @@
-const {Client, Events, GatewayIntentBits, report, fs, Collection} = require('../../backend/shared.js');
 const {SlashCommandBuilder, EmbedBuilder, PermissionsBitField} = require("discord.js");
 const {PunishmentLog} = require("../../backend/shared");
 
