@@ -1,0 +1,42 @@
+const
+    {SlashCommandBuilder} = require('discord.js'),
+    {REST, Routes} = require('discord.js'),
+    fs = require('node:fs'),
+    token = process.env.token,
+    clientId = "1078084068220092496";
+
+const commands = []
+
+// FOr each directory in the commands folder
+fs.readdirSync('../commands').forEach(dir => {
+
+    // Loop through each file in the directory
+    fs.readdirSync(`../commands/${dir}`).forEach(file => {
+
+        if (!file.endsWith('.js')) return;
+		file = require(`../commands/${dir}/${file}`)
+		commands.push(file.data.toJSON())
+
+		console.log(commands)
+
+    });
+});
+
+const rest = new REST({ version: '10' }).setToken(token);
+
+(async () => {
+	try {
+		console.log(`Started refreshing ${commands.length} application (/) commands.`);
+
+		// The put method is used to fully refresh all commands in the guild with the current set
+		const data = await rest.put(
+			Routes.applicationCommands(clientId),
+			{ body: commands },
+		);
+
+		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+	} catch (error) {
+		// And of course, make sure you catch and log any errors!
+		console.error(error);
+	}
+})();

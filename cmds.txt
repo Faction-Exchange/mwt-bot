@@ -1,0 +1,168 @@
+// ADMIN COMMANDS
+
+    new SlashCommandBuilder()
+        .setName("announce")
+        .setDescription("Announce something to the server")
+        .addStringOption(option =>
+            option.setName("message")
+                .setDescription("The message to announce")
+                .setRequired(true)
+        )
+        .addChannelOption(
+            option => option.setName("channel")
+                .setDescription("The channel to announce in")
+                .setRequired(true)
+        ),
+
+    new SlashCommandBuilder()
+        .setName("ban")
+        .setDescription("Ban a user from the server")
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("The user to ban")
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName("reason")
+                .setDescription("The reason for the ban")
+                .setRequired(true)
+        ),
+
+
+    // MODERATION COMMANDS
+
+    new SlashCommandBuilder()
+        .setName("kick")
+        .setDescription("Kick a user from the server")
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("The user to kick")
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName("reason")
+                .setDescription("The reason for the kick")
+                .setRequired(true)
+        ),
+
+    new SlashCommandBuilder()
+        .setName("mute")
+        .setDescription("Mute a user in the server")
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("The user to mute")
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName("reason")
+                .setDescription("The reason for the mute")
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName("duration")
+                .setDescription("The duration of the mute")
+                .setRequired(true)
+                .addChoices(
+                    {name: "1 minute", value: "1m"},
+                    {name: "5 minutes", value: "5m"},
+                    {name: "10 minutes", value: "10m"},
+                    {name: "1 hour", value: "1h"},
+                    {name: "1 day", value: "1d"},
+                    {name: "1 week", value: "1w"}
+                )
+        ),
+
+    new SlashCommandBuilder()
+        .setName("unmute")
+        .setDescription("Unmute a user in the server")
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("The user to unmute")
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName("reason")
+                .setDescription("The reason for the unmute")
+                .setRequired(true)
+        ),
+
+    new SlashCommandBuilder()
+        .setName("purge")
+        .setDescription("Purge a number of messages from a channel")
+        .addIntegerOption(option =>
+            option.setName("amount")
+                .setDescription("The number of messages to purge")
+                .setRequired(true)
+        )
+        .addChannelOption(option =>
+            option.setName("channel")
+                .setDescription("The channel to purge messages from")
+                .setRequired(false)
+        ),
+
+    new SlashCommandBuilder()
+        .setName("warn")
+        .setDescription("Warn a user in the server")
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("The user to warn")
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName("reason")
+                .setDescription("The reason for the warning")
+                .setRequired(true)
+        ),
+
+        new SlashCommandBuilder()
+        .setName("bans")
+        .setDescription("View the list of banned users"),
+
+    new SlashCommandBuilder()
+        .setName("warnings")
+        .setDescription("View the list of warnings for a user")
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("The user to view warnings for")
+                .setRequired(true)
+        ),
+
+    new SlashCommandBuilder()
+        .setName("kicklist")
+        .setDescription("View the list of kicked users"),
+
+    new SlashCommandBuilder()
+        .setName("mutehistory")
+        .setDescription("View the list of muted users"),
+
+    new SlashCommandBuilder()
+        .setName("blacklist")
+        .setDescription("Blacklist a user from advertising factions")
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("The user to blacklist")
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName("reason")
+                .setDescription("The reason for the blacklist")
+                .setRequired(true)
+        ),
+
+    new SlashCommandBuilder()
+        .setName("unblacklist")
+        .setDescription("Unblacklist a user from advertising factions")
+        .addUserOption(option =>
+            option.setName("user")
+                .setDescription("The user to unblacklist")
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName("reason")
+                .setDescription("The reason for the unblacklist")
+                .setRequired(true)
+        ),
+
+    new SlashCommandBuilder()
+        .setName("blacklistlist")
+        .setDescription("View the list of blacklisted users"),
