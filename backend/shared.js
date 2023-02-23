@@ -20,10 +20,8 @@ class PunishmentLog {
 
         const
             log = require('../data/punishment_logs.json'),
-            id = log.length + 1,
             date = new Date().toLocaleString(),
             logEntry = {
-                id: id,
                 punishment: punishment,
                 user: user,
                 moderator: moderator,
@@ -31,22 +29,31 @@ class PunishmentLog {
                 date: date
             };
 
+        let id = 0;
+
 
         switch (punishment) {
-
             case "kick":
+                id = log.kicks.length;
+                logEntry.id = id;
                 log.kicks.push(logEntry);
                 break;
 
             case "ban":
+                id = log.bans.length;
+                logEntry.id = id;
                 log.bans.push(logEntry);
                 break;
 
             case "mute":
+                id = log.mutes.length;
+                logEntry.id = id;
                 log.mutes.push(logEntry);
                 break;
 
             case "warn":
+                id = log.warning.length;
+                logEntry.id = id;
                 log.warning.push(logEntry);
                 break;
 
