@@ -1,8 +1,9 @@
 const
-    { Client, Events, GatewayIntentBits, PermissionsBitField, Collection } = require('discord.js'),
-     fs = require('fs'),
+    {Client, Events, GatewayIntentBits, PermissionsBitField, EmbedBuilder, Collection} = require('discord.js'),
+    fs = require('fs'),
     path = require('path'),
-    log = require('../data/punishment_logs.json');
+    log = require('../data/punishment_logs.json'),
+    logChannel = 1078460956276961331;
 
 class report {
     static log(message) {
@@ -14,9 +15,15 @@ class report {
     }
 }
 
+function embedToChannel(channel, embed) {
+    channel.send({embeds: [embed]});
+}
+
 class PunishmentLog {
 
-    static addPunishmentLog(punishment, user, reason, moderator) {
+    static addPunishmentLog(punishment, user, reason, moderator, time) {
+
+        time = time || null;
 
         const
             log = require('../data/punishment_logs.json'),
@@ -30,7 +37,6 @@ class PunishmentLog {
             };
 
         let id = 0;
-
 
         switch (punishment) {
             case "kick":
@@ -57,15 +63,55 @@ class PunishmentLog {
                 log.warning.push(logEntry);
                 break;
 
+            default:
+                report.error("Invalid punishment type: " + punishment);
+                break;
+
         }
 
+
+        console.log(moderator)
+
+        // const embed = new EmbedBuilder()
+        //     .setColor('#0099ff')
+        //     .setTitle(`${punishment} | ${user.tag}`)
+        //     .setDescription(`**Reason:** ${reason}`)
+        //     .setFooter({
+        //         text: `Moderator: ${moderator.tag} | ${date}`,
+        //         iconURL: moderator.avatarURL({format: "png", dynamic: true, size: 1024})
+        //     });
+        //
+        // embedToChannel(logChannel, embed);
+
+
         fs.writeFileSync(path.join(__dirname, '../data/punishment_logs.json'), JSON.stringify(log, null, 2));
+
     }
+
+
     static getPunishmentLog(id) {
         const log = require('../data/punishment_logs.json');
         return log.find(logEntry => logEntry.id === id);
     }
-    static getPunishmentLogs() { return require('../data/punishment_logs.json') };
+
+    static getPunishmentLogs() {
+        return require('../data/punishment_logs.json')
+    };
+
+}
+
+class fileManager {
+
+    static checkKeyExists(key, object) {
+
+        if (object.hasOwnProperty(key)) {
+            return true;
+        } else {
+            object[key] = "";
+            return false;
+        }
+
+    }
 
 }
 

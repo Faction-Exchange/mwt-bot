@@ -27,7 +27,7 @@ module.exports = {
             userAvatar = interaction.user.avatarURL({format: "png", dynamic: true, size: 1024}),
             userPermissions = new PermissionsBitField(interaction.member.permissions.bitfield);
 
-        if (!userPermissions.has(PermissionsBitField.Flags.Administrator)) {
+        if (!userPermissions.has(PermissionsBitField.Flags.KickMembers)) {
             await interaction.reply({content: "You do not have permission to use this command!", ephemeral: true});
             return;
         }

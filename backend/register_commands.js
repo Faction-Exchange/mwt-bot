@@ -17,10 +17,12 @@ fs.readdirSync('../commands').forEach(dir => {
 		file = require(`../commands/${dir}/${file}`)
 		commands.push(file.data.toJSON())
 
-		console.log(commands)
+		console.log(`Loaded command ${file.data.name} from ${dir}`)
 
     });
 });
+
+console.log("=====================================")
 
 const rest = new REST({ version: '10' }).setToken(token);
 

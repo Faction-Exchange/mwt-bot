@@ -1,4 +1,3 @@
-const {Client, Events, GatewayIntentBits, report, fs, Collection} = require('../../backend/shared.js');
 const {SlashCommandBuilder, EmbedBuilder, PermissionsBitField} = require("discord.js");
 
 module.exports = {
@@ -29,7 +28,8 @@ module.exports = {
             data = [
                 interaction.options.getString('message'),
                 interaction.options.getChannel('channel'),
-                interaction.user
+                interaction.user,
+                interaction.options.getString('title')
             ],
             userAvatar = interaction.user.avatarURL({format: "png", dynamic: true, size: 1024}),
             userPermissions = new PermissionsBitField(interaction.member.permissions.bitfield);
@@ -49,7 +49,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor('#0099ff')
-            .setTitle('Announcement')
+            .setTitle(data[3])
             .setDescription(data[0])
             .setFooter({
                 text: "Announced by " + interaction.user.tag,
