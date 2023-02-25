@@ -2,6 +2,23 @@
   "name": "mwt-bot",
   "version": "1.0.0",
   "dependencies": {
-    "discord.js": "^14.7.1"
-  }
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3",
+    "mongoose": "^6.10.0"
+  },
+  "description": "The Discord bot running the MWT Factions Exchange",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BondDixon/mwt-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BondDixon/mwt-bot/issues"
+  },
+  "homepage": "https://github.com/BondDixon/mwt-bot#readme"
 }
