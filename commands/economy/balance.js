@@ -79,11 +79,36 @@ const profileModel = require("../../models/profileSchema");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("balance")
-        .setDescription("Check your balance"),
+        .setDescription("Check your balance")
+
+        .addMentionableOption(option =>
+            option.setName("user")
+                .setDescription("The user to check the balance of")
+        ),
 
     async execute(interaction) {
 
-        const profileData = await profileModel.findOne({userID: interaction.user.id})
+        let profileData;
+
+        try {
+            profileData = await profileModel.findOne({userID: interaction.user.id});
+            if (!profileData) {
+                const embed = new EmbedBuilder()
+                    .setColor('#0099ff')
+                    .setTitle("User not in database")
+                    .setDescription("Please use the /start command to create a profile")
+                    .setTimestamp()
+                    .setFooter({
+                        text: `Requested by ${interaction.user.tag}`,
+                        iconURL: interaction.user.displayAvatarURL()
+                    })
+                return interaction.reply({embeds: [embed]})
+            }
+        }
+        catch (err) {
+            console.log(err)
+        }
+
         let currency = profileData.currency, bank = profileData.bank;
 
         // format
@@ -91,16 +116,15 @@ module.exports = {
         bank = bank.toLocaleString();
 
 
-
         const embed = new EmbedBuilder()
-                .setColor('#0099ff')
-                .setTitle("Your Balance")
-                .setDescription(`**BANK:** $${bank}\n**IN HAND:** $${currency}`)
-                .setTimestamp()
-                .setFooter({
-                    text: `Requested by ${interaction.user.tag}`,
-                    iconURL: interaction.user.displayAvatarURL()
-                });
+            .setColor('#0099ff')
+            .setTitle("Your Balance")
+            .setDescription(`**BANK:** $${bank}\n**IN HAND:** $${currency}`)
+            .setTimestamp()
+            .setFooter({
+                text: `Requested by ${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL()
+            });
 
         await interaction.reply({embeds: [embed]})
 

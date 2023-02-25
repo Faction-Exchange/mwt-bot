@@ -19,7 +19,6 @@ const profileModel = require("../models/profileSchema");
 // Database
 
 client.on(Events.InteractionCreate, async interaction => {
-    console.log(interaction.type)
 
     let profileData;
 

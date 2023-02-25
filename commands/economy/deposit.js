@@ -76,53 +76,71 @@ const {
     ];
 const profileModel = require("../../models/profileSchema");
 
-const cooldown = new Set();
-const cooldownTime = 600 * 1000;
-
 module.exports = {
-
     data: new SlashCommandBuilder()
-        .setName("work")
-        .setDescription("Work and earn money"),
+        .setName("deposit")
+        .setDescription("Deposit money into your bank account")
+        .addIntegerOption(option =>
+            option.setName("amount")
+                .setDescription("The amount of money you want to deposit")
+                .setRequired(true)
+        ),
 
     async execute(interaction) {
 
-        if (cooldown.has(interaction.user.id)) {
-            return interaction.reply({
-                content: `You are on cool down! Please wait ${cooldownTime / 1000} seconds`,
-                ephemeral: true
-            });
-        }
-
-        cooldown.add(interaction.user.id);
-        setTimeout(() => {
-            cooldown.delete(interaction.user.id);
-        }, cooldownTime);
-
         const
-            job_index = Math.floor(Math.random() * work_options.length),
-            job = work_options[job_index],
-            income = Math.floor(Math.random() * (job[2] - job[1] + 1)) + job[1],
+            amount = interaction.options.getInteger("amount"),
             profileData = await profileModel.findOne({userID: interaction.user.id}),
-            embed = new EmbedBuilder()
-                .setColor('#0099ff')
-                .setTitle(job[0])
-                .setDescription(`${job[0]} and earned $${income}!`)
+            taxRate = 0.15,
+            taxed = Math.round(amount * taxRate),
+            untaxed = amount - taxed;
+
+
+        if (amount <= 0) return interaction.reply({content: "You can't deposit less than 0", ephemeral: true});
+        if (amount % 1 !== 0) return interaction.reply({content: "You can't deposit fractions", ephemeral: true});
+
+        // chcek if user has enough money
+
+        if (amount > profileData.currency) return interaction.reply({
+            content: "You don't have enough money to deposit that much",
+            ephemeral: true
+        });
+
+
+        try {
+            await profileModel.findOneAndUpdate({
+                userID: interaction.user.id
+            }, {
+                $inc: {
+                    currency: -amount,
+                    bank: untaxed
+                }
+            });
+
+            await profileModel.findOneAndUpdate({
+                userID: 729567972070391848
+            }, {
+                $inc: {
+                    bank: taxed
+                }
+            });
+
+            const embed = new EmbedBuilder()
+                .setTitle("Deposit")
+                .setDescription(`You deposited $${amount.toLocaleString()} into your bank account. You were taxed ${taxRate * 100}% ($${taxed.toLocaleString()})`)
                 .setTimestamp()
                 .setFooter({
                     text: `Requested by ${interaction.user.tag}`,
                     iconURL: interaction.user.displayAvatarURL()
                 });
 
-        const response = await profileModel.findOneAndUpdate(
-            {
-                userID: interaction.user.id,
-            },
-            {
-                $inc: {currency: income}
-            }
-        )
+            interaction.reply({embeds: [embed]});
 
-        await interaction.reply({embeds: [embed]})
+
+        } catch (err) {
+            console.log(err);
+        }
+
     }
+
 }

@@ -76,53 +76,48 @@ const {
     ];
 const profileModel = require("../../models/profileSchema");
 
-const cooldown = new Set();
-const cooldownTime = 600 * 1000;
-
 module.exports = {
-
     data: new SlashCommandBuilder()
-        .setName("work")
-        .setDescription("Work and earn money"),
+        .setName("withdraw")
+        .setDescription("Withdraw money from your bank account")
+        .addIntegerOption(option =>
+            option.setName("amount")
+                .setDescription("The amount of money to withdraw")
+                .setRequired(true)
+        ),
 
     async execute(interaction) {
 
-        if (cooldown.has(interaction.user.id)) {
-            return interaction.reply({
-                content: `You are on cool down! Please wait ${cooldownTime / 1000} seconds`,
-                ephemeral: true
-            });
-        }
-
-        cooldown.add(interaction.user.id);
-        setTimeout(() => {
-            cooldown.delete(interaction.user.id);
-        }, cooldownTime);
-
         const
-            job_index = Math.floor(Math.random() * work_options.length),
-            job = work_options[job_index],
-            income = Math.floor(Math.random() * (job[2] - job[1] + 1)) + job[1],
+            amount = interaction.options.getInteger("amount"),
             profileData = await profileModel.findOne({userID: interaction.user.id}),
-            embed = new EmbedBuilder()
-                .setColor('#0099ff')
-                .setTitle(job[0])
-                .setDescription(`${job[0]} and earned $${income}!`)
-                .setTimestamp()
-                .setFooter({
+            taxRate = 0.15,
+            taxed = Math.round(amount * taxRate),
+            untaxed = amount - taxed;
+
+        if (amount > profileData.bank) return interaction.reply({content: "You don't have that much money in your bank account!", ephemeral: true});
+
+        await profileModel.findOneAndUpdate(
+            {
+                userID: interaction.user.id
+            },
+            {
+                $inc: {
+                    currency: untaxed,
+                    bank: -amount
+                }
+            }
+        );
+
+        const embed = new EmbedBuilder()
+            .setTitle("Withdraw")
+            .setDescription(`You withdrew $${amount.toLocaleString()} from your bank account. You were taxed 15% ($${taxed.toLocaleString()})`)
+            .setTimestamp()
+            .setFooter({
                     text: `Requested by ${interaction.user.tag}`,
                     iconURL: interaction.user.displayAvatarURL()
                 });
 
-        const response = await profileModel.findOneAndUpdate(
-            {
-                userID: interaction.user.id,
-            },
-            {
-                $inc: {currency: income}
-            }
-        )
-
-        await interaction.reply({embeds: [embed]})
+        interaction.reply({embeds: [embed]});
     }
-}
+};
