@@ -15,6 +15,7 @@ const
     }),
     mongoose = require('mongoose');
 const profileModel = require("../models/profileSchema");
+const config = require("../data/config.json");
 
 // Database
 
@@ -51,19 +52,26 @@ client.on(Events.InteractionCreate, async interaction => {
                     factionDescription = interaction.fields.getTextInputValue('factionDescriptionInput')
 
                 let
-                    factionInvite = interaction.fields.getTextInputValue('factionInviteInput'),
-                    factionLogo = interaction.fields.getTextInputValue('factionLogoInput')
-
-                // Check if faction logo is a valid URL
-                if (!factionLogo.startsWith('http')) {
-                    factionLogo = 'https://cdn.discordapp.com/embed/avatars/0.png'
-                }
+                    factionInvite = interaction.fields.getTextInputValue('factionInviteInput');
 
                 // Check if faction invite is a valid URL
                 if (!factionInvite.startsWith('http')) {
                     factionInvite = `https://${factionInvite}`
                 }
 
+                let factionLogo;
+
+                // get ../../data/config.json
+                const config = require("../data/config.json");
+
+                // check json
+                if (config[interaction.user.id.toString()] === undefined) {
+                    factionLogo = "https://cdn.discordapp.com/ephemeral-attachments/1079132532207013989/1079134986436890764/126355137.png";
+                }
+
+                else {
+                    factionLogo = config[interaction.user.id.toString()];
+                }
 
                 const embed = new EmbedBuilder()
                     .setColor('#0099ff')
