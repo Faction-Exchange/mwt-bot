@@ -107,7 +107,7 @@ client.on(Events.InteractionCreate, async interaction => {
                 await command.execute(interaction);
             } catch (error) {
                 console.error(error);
-                await interaction.reply({content: 'There was an error while executing this command!', ephemeral: true});
+                await interaction.reply({content: `There was an error while executing this command! Error: \`\`\`${error.stack}\`\`\``, ephemeral: true});
             }
             break;
     }
@@ -243,3 +243,6 @@ mongoose.connect(process.env.MONGODB_SRC, {
     console.log(err)
 })
 
+process.on('uncaughtException', function (error) {
+   console.log(error.stack);
+});
