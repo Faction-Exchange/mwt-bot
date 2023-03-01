@@ -71,8 +71,5 @@ module.exports = {
 
         await interaction.reply({embeds: [embed], ephemeral: true, content: "This function isn't yet ready, but here's a preview of what it will look like:"});
 
-
-
     }
-
 }

@@ -104,6 +104,7 @@ client.on(Events.InteractionCreate, async interaction => {
 
             const command = client.commands.get(interaction.commandName);
             try {
+                console.log(`Executing command ${interaction.commandName} for ${interaction.user.tag} (${interaction.user.id})`);
                 await command.execute(interaction);
             } catch (error) {
                 console.error(error);
