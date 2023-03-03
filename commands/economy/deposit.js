@@ -104,7 +104,7 @@ module.exports = {
         }
 
         const
-            taxRate = 0.15,
+            taxRate = 0.05,
             taxed = Math.round(amount * taxRate),
             untaxed = amount - taxed;
 

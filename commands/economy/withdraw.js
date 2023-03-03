@@ -104,7 +104,7 @@ module.exports = {
         }
 
         const
-            taxRate = 0.15,
+            taxRate = 0.05,
             taxed = Math.round(amount * taxRate),
             untaxed = amount - taxed;
 
@@ -124,7 +124,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle("Withdraw")
-            .setDescription(`You withdrew $${amount.toLocaleString()} from your bank account. You were taxed 15% ($${taxed.toLocaleString()})`)
+            .setDescription(`You withdrew $${amount.toLocaleString()} from your bank account. You were taxed 5% ($${taxed.toLocaleString()})`)
             .setTimestamp()
             .setFooter({
                     text: `Requested by ${interaction.user.tag}`,
