@@ -1,9 +1,13 @@
+require('dotenv').config();
+
 const
     {SlashCommandBuilder} = require('discord.js'),
     {REST, Routes} = require('discord.js'),
     fs = require('node:fs'),
-    token = process.env.token,
+    token = process.env.TOKEN,
     clientId = "1078084068220092496";
+
+console.log(token)
 
 const commands = []
 

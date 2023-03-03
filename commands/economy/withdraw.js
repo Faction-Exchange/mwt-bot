@@ -84,13 +84,26 @@ module.exports = {
             option.setName("amount")
                 .setDescription("The amount of money to withdraw")
                 .setRequired(true)
+        )
+        .addBooleanOption(option =>
+            option.setName("all")
+                .setDescription("Deposit all of your money")
+                .setRequired(false)
         ),
 
     async execute(interaction) {
 
         const
-            amount = interaction.options.getInteger("amount"),
-            profileData = await profileModel.findOne({userID: interaction.user.id}),
+            all = interaction.options.getBoolean("all"),
+            profileData = await profileModel.findOne({userID: interaction.user.id});
+
+        let amount = interaction.options.getInteger("amount");
+
+        if (all) {
+            amount = profileData.bank;
+        }
+
+        const
             taxRate = 0.15,
             taxed = Math.round(amount * taxRate),
             untaxed = amount - taxed;

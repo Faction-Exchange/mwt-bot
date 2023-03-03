@@ -84,16 +84,31 @@ module.exports = {
             option.setName("amount")
                 .setDescription("The amount of money you want to deposit")
                 .setRequired(true)
+        )
+        .addBooleanOption(option =>
+            option.setName("all")
+                .setDescription("Deposit all of your money")
+                .setRequired(false)
         ),
 
     async execute(interaction) {
 
         const
-            amount = interaction.options.getInteger("amount"),
-            profileData = await profileModel.findOne({userID: interaction.user.id}),
+            all = interaction.options.getBoolean("all"),
+            profileData = await profileModel.findOne({userID: interaction.user.id});
+
+        let amount = interaction.options.getInteger("amount");
+
+        if (all) {
+            amount = profileData.currency
+        }
+
+        const
             taxRate = 0.15,
             taxed = Math.round(amount * taxRate),
             untaxed = amount - taxed;
+
+
 
 
         if (amount <= 0) return interaction.reply({content: "You can't deposit less than 0", ephemeral: true});
@@ -135,12 +150,8 @@ module.exports = {
                 });
 
             interaction.reply({embeds: [embed]});
-
-
         } catch (err) {
             console.log(err);
         }
-
     }
-
 }
