@@ -11,8 +11,9 @@ module.exports = {
     async execute(interaction) {
 
 
-        const catResult = await request('https://aws.random.cat/meow');
-        const { file } = await catResult.body.json();
+        const
+            catResult = await request('https://aws.random.cat/meow'),
+            { file } = await catResult.body.json();
 
         const embed = new EmbedBuilder()
             .setColor('#0099ff')

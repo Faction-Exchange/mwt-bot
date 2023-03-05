@@ -54,10 +54,6 @@ module.exports = {
             content: "Your faction logo must be less than 8MB",
             ephemeral: true
         });
-        if (banner && banner.size > 8388608) return interaction.reply({
-            content: "Your faction banner must be less than 8MB",
-            ephemeral: true
-        });
 
         const
             factionModel = require("../../models/factionSchema.js");
