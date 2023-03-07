@@ -85,9 +85,6 @@ module.exports = {
 
         for (let i = 0; i < factionDB.factionReviews.length; i++) {
             let review = await reviewModel.findById(factionDB.factionReviews[i]);
-
-            console.log(review)
-
             newRating += review.rating;
         }
 

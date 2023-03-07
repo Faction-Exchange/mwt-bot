@@ -31,7 +31,6 @@ module.exports = {
 
         else {
             const logo = config[interaction.user.id.toString()];
-            console.log(logo);
 
             interaction.reply({
                 content: `Faction logo found (${logo})`,

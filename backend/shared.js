@@ -69,21 +69,6 @@ class PunishmentLog {
 
         }
 
-
-        console.log(moderator)
-
-        // const embed = new EmbedBuilder()
-        //     .setColor('#0099ff')
-        //     .setTitle(`${punishment} | ${user.tag}`)
-        //     .setDescription(`**Reason:** ${reason}`)
-        //     .setFooter({
-        //         text: `Moderator: ${moderator.tag} | ${date}`,
-        //         iconURL: moderator.avatarURL({format: "png", dynamic: true, size: 1024})
-        //     });
-        //
-        // embedToChannel(logChannel, embed);
-
-
         fs.writeFileSync(path.join(__dirname, '../data/punishment_logs.json'), JSON.stringify(log, null, 2));
 
     }

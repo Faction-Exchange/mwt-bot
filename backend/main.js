@@ -44,10 +44,10 @@ client.on(Events.InteractionCreate, async interaction => {
 
             const command = client.commands.get(interaction.commandName);
             try {
-                console.log(`Executing command ${interaction.commandName} for ${interaction.user.tag} (${interaction.user.id})`);
+                report.log(`Executing command ${interaction.commandName} for ${interaction.user.tag} (${interaction.user.id})`);
                 await command.execute(interaction);
             } catch (error) {
-                console.error(error);
+                report.error(error);
                 await interaction.reply({
                     content: `There was an error while executing this command! Error: \`\`\`${error.stack}\`\`\``,
                     ephemeral: true
@@ -229,7 +229,7 @@ client.on('guildMemberAdd', async member => {
 
         await profile.save();
 
-        console.log("Profile created for " + member.user.tag);
+        report.log("Profile created for " + member.user.tag);
     }
 
 
@@ -273,10 +273,10 @@ mongoose.connect(process.env.MONGODB_SRC, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
-    console.log('Connected to MongoDB!')
+    report.log('Connected to MongoDB!')
 }).catch((err) => {
-    console.log('Failed to connect to MongoDB!')
-    console.log(err)
+    report.log('Failed to connect to MongoDB!')
+    report.error(err)
 })
 
 process.on('uncaughtException', function (error) {

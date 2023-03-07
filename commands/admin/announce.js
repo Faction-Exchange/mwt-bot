@@ -44,9 +44,6 @@ module.exports = {
             return;
         }
 
-        console.log(data[1].type)
-
-
         const embed = new EmbedBuilder()
             .setColor('#0099ff')
             .setTitle(data[3])

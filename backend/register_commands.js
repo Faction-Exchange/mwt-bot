@@ -6,7 +6,6 @@ const
     token = process.env.TOKEN,
     clientId = "1078084068220092496";
 
-console.log(token)
 
 const commands = []
 

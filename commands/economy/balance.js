@@ -88,8 +88,10 @@ module.exports = {
 
     async execute(interaction) {
 
-        const userID = interaction.options.getMentionable("user") || interaction.user;
-        const username = userID.username;
+        const
+            userID = interaction.options.getMentionable("user") || interaction.user,
+            username = userID.username;
+
         let profileData;
 
         try {
@@ -113,12 +115,9 @@ module.exports = {
 
         let currency = profileData.currency, bank = profileData.bank;
 
-        // format
+        // Format the values
         currency = currency.toLocaleString();
         bank = bank.toLocaleString();
-
-
-        console.log(username)
 
         const embed = new EmbedBuilder()
             .setColor('#0099ff')
