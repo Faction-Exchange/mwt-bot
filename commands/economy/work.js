@@ -2,7 +2,6 @@ const {
         SlashCommandBuilder,
         EmbedBuilder
     } = require("discord.js"),
-    database = require("mongoose"),
     work_options = [
         ["You wrote a book", 1000, 5000],
         ["You painted a portrait", 500, 2000],
@@ -72,7 +71,59 @@ const {
         ["You provided pet therapy services", 50, 200],
         ["You cleaned up crime scenes", 200, 1000],
         ["You decorated Christmas trees", 100, 500],
-        ["You walked dogs in fancy attire", 50, 200]
+        ["You walked dogs in fancy attire", 50, 200],
+
+        // New jobs added 08/03/23
+        ["You designed a mobile game", 2000, 10000],
+        ["You created an online course", 1000, 5000],
+        ["You provided graphic design services", 500, 3000],
+        ["You wrote a technical manual", 1000, 5000],
+        ["You edited a feature film", 2000, 10000],
+        ["You provided legal services", 5000, 20000],
+        ["You translated a book", 1000, 5000],
+        ["You created a podcast", 500, 3000],
+        ["You provided financial planning services", 2000, 10000],
+        ["You designed and built a custom home", 50000, 200000],
+        ["You provided executive coaching services", 5000, 20000],
+        ["You designed a fashion line", 5000, 20000],
+        ["You provided interior design services", 1000, 5000],
+        ["You created a virtual reality experience", 5000, 20000],
+        ["You provided personal training services", 500, 3000],
+        ["You provided voiceover services", 200, 1000],
+        ["You created a computer game", 5000, 20000],
+        ["You provided wedding planning services", 2000, 10000],
+        ["You provided social media management services", 1000, 5000],
+        ["You edited a video", 500, 3000],
+        ["You designed a website logo", 200, 1000],
+        ["You created a 3D animation", 1000, 5000],
+        ["You wrote a product review", 50, 200],
+        ["You performed in a theater production", 500, 3000],
+        ["You designed a custom t-shirt", 100, 500],
+        ["You created a graphic novel", 1000, 5000],
+        ["You organized a museum exhibit", 1000, 5000],
+        ["You recorded a voiceover", 200, 1000],
+        ["You provided hair and makeup services for a photoshoot", 500, 3000],
+        ["You developed a mobile game", 2000, 10000],
+        ["You organized a food festival", 1000, 5000],
+        ["You designed an advertising billboard", 1000, 5000],
+        ["You provided translation services", 200, 1000],
+        ["You wrote a travel guidebook", 1000, 5000],
+        ["You designed a new product package", 200, 1000],
+        ["You provided financial planning services", 1000, 5000],
+        ["You created a podcast episode", 100, 500],
+        ["You designed a restaurant menu", 200, 1000],
+        ["You provided personal shopping services", 200, 1000],
+        ["You organized a comedy show", 500, 3000],
+        ["You designed a greeting card", 50, 200],
+        ["You provided academic tutoring services", 200, 1000],
+        ["You wrote a movie review", 50, 200],
+        ["You designed an e-book cover", 100, 500],
+        ["You provided life coaching services", 500, 3000],
+        ["You created a virtual reality experience", 1000, 5000],
+        ["You designed a board game", 500, 3000],
+        ["You provided voice lessons", 200, 1000],
+        ["You organized a charity auction", 0, 0],
+        ["You provided wedding planning services", 1000, 5000],
     ];
 const profileModel = require("../../models/profileSchema");
 
@@ -103,7 +154,6 @@ module.exports = {
             job_index = Math.floor(Math.random() * work_options.length),
             job = work_options[job_index],
             income = Math.floor(Math.random() * (job[2] - job[1] + 1)) + job[1],
-            profileData = await profileModel.findOne({userID: interaction.user.id}),
             embed = new EmbedBuilder()
                 .setColor('#0099ff')
                 .setTitle(job[0])
@@ -114,7 +164,7 @@ module.exports = {
                     iconURL: interaction.user.displayAvatarURL()
                 });
 
-        const response = await profileModel.findOneAndUpdate(
+        await profileModel.findOneAndUpdate(
             {
                 userID: interaction.user.id,
             },
