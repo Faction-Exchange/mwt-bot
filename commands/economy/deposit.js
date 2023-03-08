@@ -17,6 +17,8 @@ module.exports = {
 
     async execute(interaction) {
 
+        let amount;
+
         const
             profileData = await profileModel.findOne({userID: interaction.user.id}),
             taxRate = 0.05,
@@ -24,8 +26,7 @@ module.exports = {
             untaxed = amount - taxed;
 
         let
-            userCash = profileData.currency,
-            amount = userCash;
+            userCash = profileData.currency;
 
         // If amount is defined, set amount to amount
         if (interaction.options.getInteger("amount")) {
