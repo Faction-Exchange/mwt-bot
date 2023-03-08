@@ -167,33 +167,6 @@ client.login(token).then(r =>
     report.error('Failed to log in!', e)
 );
 
-// every 30 seconds, send cat in 1078082064924016810
-setInterval(async () => {
-
-   // Send 4 at once
-    const files = [];
-    for (let i = 0; i < 4; i++) {
-        const catResult = await request('https://aws.random.cat/meow');
-        const {file} = await catResult.body.json();
-        files.push(file);
-    }
-
-    // add button to message that links to cat
-    const row = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setLabel('Source')
-                .setStyle(ButtonStyle.Link)
-                .setURL("https://aws.random.cat/")
-        );
-
-
-
-    // send in channel with id 1078082064924016810
-    const channel = await client.channels.fetch('1078082064924016810');
-    await channel.send({files: files, components: [row]});
-}, 30000);
-
 client.once(Events.ClientReady, c => {
     report.log(`Ready! Logged in as ${c.user.tag}`);
     report.log("Loading commands...");
