@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, EmbedBuilder, PermissionsBitField} = require("discord.js");
+const {SlashCommandBuilder, EmbedBuilder} = require("discord.js");
 const { request } = require('undici');
 
 
@@ -9,7 +9,6 @@ module.exports = {
 
 
     async execute(interaction) {
-
 
         const
             catResult = await request('https://aws.random.cat/meow'),

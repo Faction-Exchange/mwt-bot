@@ -42,8 +42,7 @@ module.exports = {
             });
 
         await data[0].send({embeds: [embed]});
-
-        await interaction.guild.members.ban(data[0], {reason: data[1]});
+        await interaction.guild.members.ban(data[0], {reason: data[1]})
         await interaction.reply({content: `Banned ${data[0].tag} for ${data[1]}`, ephemeral: true});
 
         PunishmentLog.addPunishmentLog("ban", data[0], data[1], data[2]);

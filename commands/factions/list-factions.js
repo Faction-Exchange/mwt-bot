@@ -1,7 +1,6 @@
 const {
         SlashCommandBuilder, EmbedBuilder
-    } = require("discord.js"),
-    database = require("mongoose");
+    } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,11 +9,10 @@ module.exports = {
 
     async execute(interaction) {
 
-        const factionModel = require("../../models/factionSchema.js");
-
         const
+            factionModel = require("../../models/factionSchema.js"),
             factions = await factionModel.find(),
-            info = {}
+            info = {};
 
         for (const faction of factions) {
 

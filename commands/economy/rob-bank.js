@@ -5,8 +5,7 @@ const {
 const profileModel = require("../../models/profileSchema");
 
 const
-    cooldownTime = 14400 * 1000,
-    cooldownTimeSeconds = cooldownTime / 1000;
+    cooldownTime = 14400 * 1000;
 
 let cooldown;
 
@@ -14,12 +13,14 @@ module.exports = {
 
     data: new SlashCommandBuilder()
         .setName("rob-bank")
-        .setDescription("Rob the Royal Bank of Military Warfare Tycoonia"),
+        .setDescription("Rob the Royal Bank of Faction Exchange"),
 
     async execute(interaction) {
 
         // Clone the user collection in the database
-        const allProfiles = await profileModel.find({});
+        const
+            allProfiles = await profileModel.find({});
+
         for (const profile of allProfiles) {
 
             // new collection with the same data
@@ -52,11 +53,9 @@ module.exports = {
         const
             successRate = 0.2,
             random = Math.random(),
-            success = random < successRate;
-
-        // get balance of the current user
-        const profileData = await profileModel.findOne({userID: interaction.user.id});
-        const userBalance = profileData.bank;
+            success = random < successRate,
+            profileData = await profileModel.findOne({userID: interaction.user.id}),
+            userBalance = profileData.bank;
 
         let
             robbed = 0,

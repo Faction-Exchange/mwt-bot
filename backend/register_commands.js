@@ -4,10 +4,8 @@ const
     {REST, Routes} = require('discord.js'),
     fs = require('node:fs'),
     token = process.env.TOKEN,
-    clientId = "1078084068220092496";
-
-
-const commands = []
+    clientId = "1078084068220092496",
+	commands = []
 
 // FOr each directory in the commands folder
 fs.readdirSync('../commands').forEach(dir => {

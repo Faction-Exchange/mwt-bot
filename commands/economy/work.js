@@ -1,6 +1,7 @@
 const {
         SlashCommandBuilder,
-        EmbedBuilder
+        EmbedBuilder,
+        Collection
     } = require("discord.js"),
     work_options = [
         ["You wrote a book", 1000, 5000],
@@ -177,13 +178,13 @@ const {
         ["**FACTION:** You were assigned to rescue a group of hostages held by a rival faction", 1500, 8000],
         ["**FACTION:** You were accused of insubordination and had to prove your loyalty to your faction (:red_circle: 25% less income on your next 5 faction related jobs)", -500, -2000],
         ["**FACTION:** You were tasked with sabotaging a rival faction's communication network", 1000, 5000]
-
-
     ];
-const profileModel = require("../../models/profileSchema");
+const
+    profileModel = require("../../models/profileSchema"),
+    cooldown = new Set(),
+    cooldownTime = 600 * 1000,
+    modifiers = new Collection();
 
-const cooldown = new Set();
-const cooldownTime = 600 * 1000;
 
 module.exports = {
 
@@ -209,23 +210,24 @@ module.exports = {
             job_index = Math.floor(Math.random() * work_options.length),
             job = work_options[job_index],
             income = Math.floor(Math.random() * (job[2] - job[1] + 1)) + job[1],
+            loss = income < 0;
+
+        const
             embed = new EmbedBuilder()
                 .setColor('#0099ff')
-                .setTitle(job[0])
-                .setDescription(`${job[0]} and earned $${income}!`)
+                .setTitle(`You worked a normal, civilian job.`)
+                .setDescription(`${job[0]} and ${loss ? "lost " : "earned"} $${income}!`)
                 .setTimestamp()
                 .setFooter({
                     text: `Requested by ${interaction.user.tag}`,
                     iconURL: interaction.user.displayAvatarURL()
                 });
 
+        if (job[0].includes("FACTION")) embed.setTitle(`You worked for a faction.`);
+
         await profileModel.findOneAndUpdate(
-            {
-                userID: interaction.user.id,
-            },
-            {
-                $inc: {currency: income}
-            }
+            { userID: interaction.user.id, },
+            { $inc: {currency: income} }
         )
 
         await interaction.reply({embeds: [embed]})

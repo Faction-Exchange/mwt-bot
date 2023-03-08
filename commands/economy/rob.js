@@ -36,7 +36,8 @@ module.exports = {
         const
             target = interaction.options.getUser("target");
 
-        let targetData;
+        let
+            targetData;
 
         if (target.id === interaction.user.id) {
             return interaction.reply({
@@ -81,7 +82,7 @@ module.exports = {
                     iconURL: interaction.user.displayAvatarURL()
                 })
 
-            const response = await profileModel.findOneAndUpdate(
+            await profileModel.findOneAndUpdate(
                 {
                     userID: interaction.user.id,
                 },

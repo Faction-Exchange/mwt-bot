@@ -3,7 +3,7 @@ require('dotenv').config();
 // get all from shares.js
 const
     {Client, Events, GatewayIntentBits, report, fs, Collection} = require('./shared.js'),
-    {EmbedBuilder, MessageActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle} = require("discord.js"),
+    {EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle} = require("discord.js"),
     token = process.env.TOKEN,
     client = new Client({
         intents: Object.values(GatewayIntentBits).reduce((a, b) => a | b, 0),
@@ -162,7 +162,7 @@ function load_commands(category) {
 
 // Log in to Discord with env
 client.login(token).then(r =>
-    report.log('Logged in!')
+    report.log(r)
 ).catch(e =>
     report.error('Failed to log in!', e)
 );
@@ -193,14 +193,11 @@ client.on('guildMemberAdd', async member => {
 
     const
         catResult = await request('https://aws.random.cat/meow'),
-        {file} = await catResult.body.json();
-
-    const
+        {file} = await catResult.body.json(),
         welcome_channel = member.guild.channels.cache.find(channel => channel.name === 'welcomes'),
-        role = member.guild.roles.cache.find(role => role.name === 'Exchange Member');
-
-    const memberCount = member.guild.memberCount;
-    const suffix = memberCount === 1 ? 'st' : memberCount === 2 ? 'nd' : memberCount === 3 ? 'rd' : 'th';
+        role = member.guild.roles.cache.find(role => role.name === 'Exchange Member'),
+        memberCount = member.guild.memberCount,
+        suffix = memberCount === 1 ? 'st' : memberCount === 2 ? 'nd' : memberCount === 3 ? 'rd' : 'th';
 
     let welcome_embed = new EmbedBuilder()
         .setTitle('Welcome!')
@@ -217,7 +214,9 @@ client.on('guildMemberAdd', async member => {
 
     // Economy
 
-    const profileModel = require('../models/profileSchema');
+    const
+        profileModel = require('../models/profileSchema');
+
     module.exports = async (client, Discord, member) => {
         let profile = await profileModel.create({
             userID: member.id,
@@ -238,11 +237,8 @@ client.on('guildMemberRemove', async member => {
 
     const
         catResult = await request('https://aws.random.cat/meow'),
-        {file} = await catResult.body.json();
-
-    const
-        welcome_channel = member.guild.channels.cache.find(channel => channel.name === 'welcomes'),
-        role = member.guild.roles.cache.find(role => role.name === 'Exchange Member');
+        {file} = await catResult.body.json(),
+        welcome_channel = member.guild.channels.cache.find(channel => channel.name === 'welcomes');
 
     let welcome_embed = new EmbedBuilder()
         .setTitle('Goodbye!')
@@ -261,8 +257,8 @@ client.on('messageCreate', async message => {
     // react with nerd
     if (message.content.toLowerCase().includes('nerd')) {
         await message.react('🤓');
-        // then hsield
-        message.react('🛡️');
+        await message.react(`<:nerdcat:1082028557288611982>`)
+        await message.react('🛡️');
     }
 
 });

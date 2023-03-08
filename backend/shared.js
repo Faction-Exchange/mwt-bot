@@ -1,9 +1,7 @@
 const
-    {Client, Events, GatewayIntentBits, PermissionsBitField, EmbedBuilder, Collection} = require('discord.js'),
+    {Client, Events, GatewayIntentBits, Collection} = require('discord.js'),
     fs = require('fs'),
-    path = require('path'),
-    log = require('../data/punishment_logs.json'),
-    logChannel = 1078460956276961331;
+    path = require('path');
 
 class report {
     static log(message) {
@@ -15,15 +13,9 @@ class report {
     }
 }
 
-function embedToChannel(channel, embed) {
-    channel.send({embeds: [embed]});
-}
-
 class PunishmentLog {
 
-    static addPunishmentLog(punishment, user, reason, moderator, time) {
-
-        time = time || null;
+    static addPunishmentLog(punishment, user, reason, moderator) {
 
         const
             log = require('../data/punishment_logs.json'),
@@ -82,21 +74,6 @@ class PunishmentLog {
     static getPunishmentLogs() {
         return require('../data/punishment_logs.json')
     };
-
-}
-
-class fileManager {
-
-    static checkKeyExists(key, object) {
-
-        if (object.hasOwnProperty(key)) {
-            return true;
-        } else {
-            object[key] = "";
-            return false;
-        }
-
-    }
 
 }
 

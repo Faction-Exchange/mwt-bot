@@ -1,11 +1,9 @@
 const {
     SlashCommandBuilder,
-    Events,
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
-    ActionRowBuilder,
-    Client
+    ActionRowBuilder
 } = require("discord.js");
 
 module.exports = {
@@ -26,7 +24,6 @@ module.exports = {
                 ephemeral: true
             });
 
-            const logo = "https://cdn.discordapp.com/ephemeral-attachments/1079132532207013989/1079134986436890764/126355137.png";
         }
 
         else {

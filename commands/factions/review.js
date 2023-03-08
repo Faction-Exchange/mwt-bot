@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, EmbedBuilder, PermissionsBitField} = require("discord.js");
+const {SlashCommandBuilder, EmbedBuilder} = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -51,9 +51,7 @@ module.exports = {
 
         const
             factionModel = require("../../models/factionSchema.js"),
-            reviewModel = require("../../models/reviewSchema.js"),
-            review = await reviewModel.findOne({ faction: faction, author: interaction.user.id });
-
+            reviewModel = require("../../models/reviewSchema.js");
         const
             newReview = new reviewModel({
                 faction: faction,
@@ -63,7 +61,6 @@ module.exports = {
             });
 
         await newReview.save().catch(err => console.log(err));
-
         // Check if the faction exists
         if (!await factionModel.exists({ factionName: faction })) {
             return interaction.reply({
@@ -111,7 +108,5 @@ module.exports = {
             });
 
         interaction.reply({ embeds: [embed] });
-
-
     }
 };
