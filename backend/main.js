@@ -167,6 +167,17 @@ client.login(token).then(r =>
     report.error('Failed to log in!', e)
 );
 
+// every 30 seconds, send cat in 1078082064924016810
+setInterval(async () => {
+
+    const
+        catResult = await request('https://aws.random.cat/meow'),
+        {file} = await catResult.body.json();
+
+    const channel = await client.channels.fetch('1078082064924016810');
+    await channel.send({content: file});
+
+}, 30000);
 
 client.once(Events.ClientReady, c => {
     report.log(`Ready! Logged in as ${c.user.tag}`);
