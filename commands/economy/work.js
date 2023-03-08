@@ -122,7 +122,7 @@ const {
         ["You created a virtual reality experience", 1000, 5000],
         ["You designed a board game", 500, 3000],
         ["You provided voice lessons", 200, 1000],
-        ["You organized a charity auction", 0, 0],
+        ["You organized a charity auction and may have embezzled funds", 0, 1],
         ["You provided wedding planning services", 1000, 5000],
     ];
 const profileModel = require("../../models/profileSchema");
