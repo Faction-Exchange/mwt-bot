@@ -17,24 +17,29 @@ module.exports = {
 
     async execute(interaction) {
 
-        let amount;
-
         const
-            profileData = await profileModel.findOne({userID: interaction.user.id}),
-            taxRate = 0.05,
-            taxed = Math.round(amount * taxRate),
-            untaxed = amount - taxed;
+            profileData = await profileModel.findOne({userID: interaction.user.id});
 
+        // amount = user cash or amount
         let
-            userCash = profileData.currency;
+            userCash = profileData.currency,
+            amount = /* cash if amount is undefined */ userCash;
 
-        // If amount is defined, set amount to amount
+        // if amount is defined, set amount to amount
         if (interaction.options.getInteger("amount")) {
             amount = interaction.options.getInteger("amount");
         }
 
+
+        const
+            taxRate = 0.05,
+            taxed = Math.round(amount * taxRate),
+            untaxed = amount - taxed;
+
+
+
         if (amount <= 0) return interaction.reply({content: "You can't deposit less than 0", ephemeral: true});
-        if (amount % 1 !== 0) return interaction.reply({content: "You can't deposit fractions", ephemeral: true});
+        // if (amount % 1 == false) return interaction.reply({content: "You can't deposit fractions", ephemeral: true});
 
         // Check if user has enough money
         if (amount > profileData.currency) return interaction.reply({
