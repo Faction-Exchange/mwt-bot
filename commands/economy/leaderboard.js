@@ -23,7 +23,7 @@ module.exports = {
     async execute(interaction) {
 
         const
-            sortOption = "bank" || interaction.getAttribute("type");
+            sortOption = interaction.options.getString("type") || "bank";
 
         let
             results,
