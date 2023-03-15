@@ -17,6 +17,13 @@ module.exports = {
 
     async execute(interaction) {
 
+        let
+            searchTime = Date.now(),
+            summaryTime;
+
+        let
+            timeForSearch,
+            timeForSummary;
 
         interaction.reply("<a:processing:1085670319127285850> Searching... This may take up to 5 seconds")
 
@@ -27,6 +34,8 @@ module.exports = {
         search.searchGoogle(query).then(async (results) => {
 
             await interaction.editReply("<a:processing:1085670319127285850> Search complete. Processing results... This may take up to 15 seconds")
+
+            timeForSearch = Date.now() - searchTime;
 
             const
                 article = results.snippets,
@@ -76,8 +85,12 @@ module.exports = {
                 heading;
 
 
+            summaryTime = Date.now();
+
             axios(config)
                 .then(async (response) => {
+
+                        timeForSummary = Date.now() - summaryTime;
 
                         const
                             output_1 = response.data.output[0],
@@ -107,9 +120,9 @@ module.exports = {
                         const embed = new EmbedBuilder()
                             .setColor('#0099ff')
                             .setTitle(heading)
-                            .setDescription(summary + "\n\n" + topics + "\n\n**Sources**: " + sources)
+                            .setDescription(`${summary}\n\n${topics}\n\n**Sources:** ${sources}`)
                             .setFooter({
-                                text: `Requested by ${interaction.user.username}`,
+                                text: `Took ${timeForSearch}ms to search and ${timeForSummary}ms to summarise | Requested by ${interaction.user.username}`,
                                 iconURL: "https://cataas.com/cat?width=32&height=32"
                             });
 
