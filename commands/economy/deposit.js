@@ -36,8 +36,6 @@ module.exports = {
             taxed = Math.round(amount * taxRate),
             untaxed = amount - taxed;
 
-
-
         if (amount <= 0) return interaction.reply({content: "You can't deposit less than 0", ephemeral: true});
         // if (amount % 1 == false) return interaction.reply({content: "You can't deposit fractions", ephemeral: true});
 

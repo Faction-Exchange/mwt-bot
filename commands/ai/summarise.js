@@ -7,7 +7,7 @@ console.log("API Key: " + apiKey)
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("ai")
+        .setName("summarise")
         .setDescription("Use our top class artificial intelligence to grab key points from a text prompt")
         .addStringOption(option =>
             option.setName("prompt")
@@ -45,8 +45,10 @@ module.exports = {
                         {
                             skill: "summarize",
                             params: {
-                                "auto_length": true,
-                                "find_origins": false
+                                "auto_length": false,
+                                "find_origins": true,
+                                "max_length": 100,
+                                "min_length": 10,
                             }
                         }
                     ],
