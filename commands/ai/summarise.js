@@ -1,6 +1,7 @@
 const {SlashCommandBuilder, EmbedBuilder} = require("discord.js");
 const axios = require("axios"),
     apiKey = process.env.API_KEY;
+const profileModel = require("../../models/profileSchema");
 require('dotenv').config();
 
 console.log("API Key: " + apiKey)
@@ -15,6 +16,23 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
+
+        const profileData = await profileModel.findOne({userID: interaction.user.id});
+
+        // Check if the user has enough currency
+        if (profileData.currency < 5000) return interaction.reply({
+            content: "You don't have enough money, you need at least $5,000. Use /work to earn money",
+        });
+
+        else {
+            await profileModel.findOneAndUpdate({
+                userID: interaction.user.id
+            }, {
+                $inc: {
+                    currency: -2500
+                }
+            });
+        }
 
         interaction.reply("Processing... This may take up to 5 seconds")
 

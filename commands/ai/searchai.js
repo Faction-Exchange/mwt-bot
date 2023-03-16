@@ -5,6 +5,7 @@ const
     axios = require("axios"),
     apiKey = process.env.API_KEY;
 const {EmbedBuilder, SlashCommandBuilder} = require("discord.js");
+const profileModel = require("../../models/profileSchema");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,6 +17,23 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
+
+        const profileData = await profileModel.findOne({userID: interaction.user.id});
+
+        // Check if the user has enough currency
+        if (profileData.currency < 10000) return interaction.reply({
+            content: "You don't have enough money, you need at least $10,000. Use /work to earn money",
+        });
+
+        else {
+            await profileModel.findOneAndUpdate({
+                userID: interaction.user.id
+            }, {
+                $inc: {
+                    currency: -2500
+                }
+            });
+        }
 
         let
             searchTime = Date.now(),
