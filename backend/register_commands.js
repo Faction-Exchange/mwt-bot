@@ -4,7 +4,7 @@ const
     {REST, Routes} = require('discord.js'),
     fs = require('node:fs'),
     token = process.env.TOKEN,
-    clientId = "1078084068220092496",
+    clientId = process.env.CLIENT_ID;
 	commands = []
 
 // FOr each directory in the commands folder

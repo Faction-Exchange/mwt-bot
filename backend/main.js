@@ -201,7 +201,13 @@ client.on('guildMemberAdd', async member => {
 
     let welcome_embed = new EmbedBuilder()
         .setTitle('Welcome!')
-        .setDescription(`Welcome to the server, **<@${member.user.id}>!** You're the ${member.guild.memberCount}${suffix} member!`)
+        .setDescription(`Welcome to the server, **<@${member.user.id}>!** You're the ${member.guild.memberCount}${suffix} member!
+        
+       
+       **Here for an exclusive faction?**
+       Check the Faction Exchange Exclusives category for a list of exclusive factions.
+       <#1088530555190132766> • <#1088530612912144474> 
+        `)
         .setImage(file)
         .setColor(0x00ff00)
         .setTimestamp();
