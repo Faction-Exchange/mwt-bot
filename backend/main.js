@@ -12,6 +12,12 @@ const
 const profileModel = require("../models/profileSchema");
 const {request} = require("undici");
 
+
+// Cooldowns
+
+const
+    MSG_COOLDOWN = new Set();
+
 // Database
 
 client.on(Events.InteractionCreate, async interaction => {
@@ -260,13 +266,29 @@ client.on('guildMemberRemove', async member => {
 
 client.on('messageCreate', async message => {
 
-    // react with nerd
-    if (message.content.toLowerCase().includes('nerd')) {
-        await message.react('🤓');
-        await message.react(`<:nerdcat:1082028557288611982>`)
-        await message.react('🛡️');
-    }
+    if (message.author.bot) return;
 
+    // if user is on timeout
+    if (message.author.id in MSG_COOLDOWN) return;
+    // add user to timeout
+    MSG_COOLDOWN[message.author.id] = true;
+
+    // remove user from timeout after 30 seconds
+    setTimeout(() => {
+        delete MSG_COOLDOWN[message.author.id];
+    }, 30000);
+
+    const length = message.content.length;
+    if (length < 20) return;
+
+    const
+        profileModel = require('../models/profileSchema.js'),
+        currency = Math.floor(Math.random() * 100) + 1;
+
+    await profileModel.findOneAndUpdate(
+        { userID :   message.author.id  },
+        { $inc   : { currency: currency }
+    });
 });
 
 mongoose.set("strictQuery", true);
