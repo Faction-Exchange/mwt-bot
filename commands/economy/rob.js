@@ -60,7 +60,7 @@ module.exports = {
                 targetCash = targetData.currency,
                 robbed = Math.round(Math.random() / 2 * targetCash)
 
-            if (robbed === 0) {
+            if (robbed <= 0) {
                 const embed = new EmbedBuilder()
                     .setTitle("Rob")
                     .setDescription(`You tried to rob ${target.tag} but failed!`)
