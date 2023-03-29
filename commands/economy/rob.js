@@ -6,7 +6,7 @@ const profileModel = require("../../models/profileSchema");
 
 const cooldown = new Set();
 const cooldownTime = 600 * 1000;
-
+const cooldownEpoch = 600;
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,18 +20,30 @@ module.exports = {
 
     async execute(interaction) {
 
-        if (cooldown.has(interaction.user.id)) {
-            return interaction.reply({
-                content: `You are on cool down! Please wait ${cooldownTime / 1000} seconds`,
-                ephemeral: true
-            });
+        // Check if the user is in the cooldown
+        // stored like this: `USERID ::: DATE`
+
+        // loop through the cooldown set
+        for (const id of cooldown) {
+            // split the id into an array
+            const split = id.split(" ::: ");
+
+            // check if the user id is the same as the user who ran the command
+            if (split[0] === interaction.user.id) {
+                // check if the current time is greater than the cooldown time
+                if (Date.now() < split[1] + cooldownTime) {
+                    // calculate the time left
+                    const endTime = (parseInt(split[1]) + 600);
+
+                    // return the error message
+
+                    return await interaction.reply({
+                        content: `You're on cooldown! Expires <t:${Math.round((endTime))}:R>`,
+                    });
+
+                }
+            }
         }
-
-        cooldown.add(interaction.user.id);
-        setTimeout(() => {
-            cooldown.delete(interaction.user.id);
-        }, cooldownTime);
-
 
         const
             target = interaction.options.getUser("target");
@@ -60,18 +72,26 @@ module.exports = {
                 targetCash = targetData.currency,
                 robbed = Math.round(Math.random() / 2 * targetCash)
 
-            if (robbed <= 0) {
-                const embed = new EmbedBuilder()
-                    .setTitle("Rob")
-                    .setDescription(`You tried to rob ${target.tag} but failed!`)
-                    .setTimestamp()
-                    .setFooter({
-                        text: `Requested by ${interaction.user.tag}`,
-                        iconURL: interaction.user.displayAvatarURL()
-                    })
+            // if (robbed <= 0) {
+            //     const embed = new EmbedBuilder()
+            //         .setTitle("Rob")
+            //         .setDescription(`You tried to rob ${target.tag} but failed!`)
+            //         .setTimestamp()
+            //         .setFooter({
+            //             text: `Requested by ${interaction.user.tag}`,
+            //             iconURL: interaction.user.displayAvatarURL()
+            //         })
+            //
+            //     return interaction.reply({embeds: [embed]});
+            // }
 
-                return interaction.reply({embeds: [embed]});
-            }
+            // add dictionary of the user id and the current time
+            cooldown.add(`${interaction.user.id} ::: ${Math.floor(new Date().getTime() / 1000.0)}`)
+
+            setTimeout(() => {
+                cooldown.delete(`${interaction.user.id} ::: ${Math.floor(new Date().getTime() / 1000.0)}`);
+                console.log(`Removed ${interaction.user.id} from the cooldown`);
+            }, cooldownTime);
 
             const embed = new EmbedBuilder()
                 .setTitle("Rob")

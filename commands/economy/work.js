@@ -192,16 +192,34 @@ module.exports = {
 
     async execute(interaction) {
 
-        if (cooldown.has(interaction.user.id)) {
-            return interaction.reply({
-                content: `You are on cool down! Please wait ${cooldownTime / 1000} seconds`,
-                ephemeral: true
-            });
+        // loop through the cooldown set
+        for (const id of cooldown) {
+            // split the id into an array
+            const split = id.split(" ::: ");
+
+            // check if the user id is the same as the user who ran the command
+            if (split[0] === interaction.user.id) {
+                // check if the current time is greater than the cooldown time
+                if (Date.now() < split[1] + cooldownTime) {
+                    // calculate the time left
+                    const endTime = (parseInt(split[1]) + 600);
+
+                    // return the error message
+
+                    return await interaction.reply({
+                        content: `You're on cooldown! Expires <t:${Math.round((endTime))}:R>`,
+                    });
+
+                }
+            }
         }
 
-        cooldown.add(interaction.user.id);
+        // add dictionary of the user id and the current time
+        cooldown.add(`${interaction.user.id} ::: ${Math.floor(new Date().getTime() / 1000.0)}`)
+
         setTimeout(() => {
-            cooldown.delete(interaction.user.id);
+            cooldown.delete(`${interaction.user.id} ::: ${Math.floor(new Date().getTime() / 1000.0)}`);
+            console.log(`Removed ${interaction.user.id} from the cooldown`);
         }, cooldownTime);
 
         const
