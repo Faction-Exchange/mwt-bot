@@ -9,7 +9,7 @@ const
         intents: Object.values(GatewayIntentBits).reduce((a, b) => a | b, 0),
     }),
     mongoose = require('mongoose');
-const profileModel = require("../models/profileSchema");
+let profileModel = require("../models/profileSchema.js");
 const {request} = require("undici");
 
 
@@ -137,14 +137,6 @@ client.on(Events.InteractionCreate, async interaction => {
 
     }
 });
-
-
-/*
-    ====================================================================================================================
-    COMMAND HANDLER /// COMMAND HANDLER /// COMMAND HANDLER /// COMMAND HANDLER /// COMMAND HANDLER /// COMMAND HANDLER
-    ====================================================================================================================
-*/
-
 // Command Location: ../commands/*
 
 client.commands = new Collection();
@@ -286,9 +278,10 @@ client.on('messageCreate', async message => {
         currency = Math.floor(Math.random() * 100) + 1;
 
     await profileModel.findOneAndUpdate(
-        { userID :   message.author.id  },
-        { $inc   : { currency: currency }
-    });
+        {userID: message.author.id},
+        {
+            $inc: {currency: currency}
+        });
 });
 
 mongoose.set("strictQuery", true);
@@ -297,11 +290,48 @@ mongoose.connect(process.env.MONGODB_SRC, {
     useUnifiedTopology: true
 }).then(() => {
     report.log('Connected to MongoDB!')
-}).catch((err) => {
-    report.log('Failed to connect to MongoDB!')
-    report.error(err)
 })
+    .catch((err) => {
+        report.log('Failed to connect to MongoDB!')
+        report.error(err)
+    })
 
 process.on('uncaughtException', function (error) {
     console.log(error.stack);
 });
+
+// Every minute
+
+setInterval(async () => {
+
+    // Loop through everyone's banks
+    // and add interest of 1%
+
+    // for each user
+    // get their bank
+    // add 1% of their bank to their bank
+
+    const users = await profileModel.find({});
+
+    for (const user of users) {
+        const
+            newBank = user.userID === 729567972070391848 ? user.bank * 1.5 : user.bank * 1.01;
+        user.bank = Math.floor(newBank);
+        await user.save();
+    }
+
+    const
+        epoch = Math.floor(Date.now() / 1000),
+        tomorrow = epoch + 86400;
+
+    // Update embed on message with id 1090695819675578378
+    const
+        message = await client.channels.cache.get('1078776371557445682').messages.fetch('1090695819675578378'),
+        embed = new EmbedBuilder()
+            .setTitle('Interest History')
+            .setDescription(`**Last payout:** <t:${epoch}:R> | 1% interest paid out to active users\n**Next payout:** <t:${tomorrow}:R>`)
+            .setColor(0x00ff00)
+            .setTimestamp();
+
+    await message.edit({embeds: [embed]});
+}, 86400000);

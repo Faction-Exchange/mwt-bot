@@ -182,9 +182,7 @@ const {
 const
     profileModel = require("../../models/profileSchema"),
     cooldown = new Set(),
-    cooldownTime = 600 * 1000,
-    modifiers = new Collection();
-
+    cooldownTime = 600 * 1000;
 
 module.exports = {
 
@@ -212,6 +210,8 @@ module.exports = {
             income = Math.floor(Math.random() * (job[2] - job[1] + 1)) + job[1],
             loss = income < 0;
 
+
+
         const
             embed = new EmbedBuilder()
                 .setColor('#0099ff')
@@ -231,5 +231,23 @@ module.exports = {
         )
 
         await interaction.reply({embeds: [embed]})
+
+        // If income greater than 50k
+        if (income > 50000) {
+
+            // Pin the bots reply
+            await interaction.channel.messages.fetch({ limit: 1 }).then(messages => {
+                const lastMessage = messages.first();
+                lastMessage.pin();
+            });
+
+            // add party emoji to the message
+            await interaction.channel.messages.fetch({ limit: 1 }).then(messages => {
+                const lastMessage = messages.first();
+                lastMessage.react('🎉');
+                lastMessage.react('🎊');
+                lastMessage.react('🤓');
+            })
+        }
     }
 }
