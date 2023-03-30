@@ -182,7 +182,7 @@ const {
 const
     profileModel = require("../../models/profileSchema"),
     cooldown = new Set(),
-    cooldownTime = 600 * 1000;
+    cooldownTime = 60 * 1000;
 
 module.exports = {
 
@@ -201,24 +201,49 @@ module.exports = {
             if (split[0] === interaction.user.id) {
                 // check if the current time is greater than the cooldown time
                 if (Date.now() < split[1] + cooldownTime) {
-                    // calculate the time left
-                    const endTime = (parseInt(split[1]) + 600);
 
-                    // return the error message
+                    // display time like this <t:epochtime:R>
 
-                    return await interaction.reply({
-                        content: `You're on cooldown! Expires <t:${Math.round((endTime))}:R>`,
-                    });
+                    split[1] = parseInt(split[1]);
 
+
+                    const
+                        timeLeft = (split[1] + cooldownTime - Date.now()),
+                        embed = new EmbedBuilder()
+                            .setTitle("Cooldown")
+                            .setDescription(`You are on cooldown until <t:${(Date.now() + timeLeft)}:R>`)
+                            .setTimestamp()
+                            .setFooter({
+                                text: `Requested by ${interaction.user.tag}`,
+                                iconURL: interaction.user.displayAvatarURL()
+                            });
+
+                    console.log(
+                        [
+                            split[1],
+                            cooldownTime,
+                            Date.now(),
+                            Date.now() + cooldownTime,
+                            timeLeft,
+
+                        ]
+                    )
+
+                    return interaction.reply({embeds: [embed]});
                 }
             }
         }
 
         // add dictionary of the user id and the current time
-        cooldown.add(`${interaction.user.id} ::: ${Math.floor(new Date().getTime() / 1000.0)}`)
+        const
+            epochTime = Math.round(new Date().getTime() / 1000),
+            endTime = `${interaction.user.id} ::: ${epochTime}`,
+            expireTime = epochTime + 600;
+
+        cooldown.add(endTime);
 
         setTimeout(() => {
-            cooldown.delete(`${interaction.user.id} ::: ${Math.floor(new Date().getTime() / 1000.0)}`);
+            cooldown.delete(endTime);
             console.log(`Removed ${interaction.user.id} from the cooldown`);
         }, cooldownTime);
 
