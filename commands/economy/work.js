@@ -253,6 +253,11 @@ module.exports = {
             income = Math.floor(Math.random() * (job[2] - job[1] + 1)) + job[1],
             loss = income < 0;
 
+        const
+            bank = await profileModel.findOne({userID: interaction.user.id}),
+            handBalance = bank.currency,
+            bankBalance = bank.bank;
+
 
 
         const
@@ -292,5 +297,26 @@ module.exports = {
                 lastMessage.react('🤓');
             })
         }
+
+        // if all money (bank + income) is greater than 1 million
+        if (income + bankBalance > 1000000) {
+            // add party emoji to the message
+            await interaction.channel.messages.fetch({ limit: 1 }).then(messages => {
+                const lastMessage = messages.first();
+                lastMessage.react('🎉');
+                lastMessage.react('🎊');
+                lastMessage.react('🛡️');
+            })
+
+            await interaction.channel.send(`Congratulations <@${interaction.user.id}>! You have reached 1 million dollars!`)
+
+            // Pin the bots reply
+            await interaction.channel.messages.fetch({limit: 1}).then(messages => {
+                const lastMessage = messages.first();
+                lastMessage.pin();
+            });
+
+        }
+
     }
 }
