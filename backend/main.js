@@ -302,31 +302,31 @@ process.on('uncaughtException', function (error) {
 
 // Every minute
 
-setInterval(async () => {
-
-    if (new Date().getHours() === 0 && new Date().getMinutes() === 0) {
-        const users = await profileModel.find({});
-
-        for (const user of users) {
-            const
-                newBank = user.userID === 729567972070391848 ? user.bank * 1.5 : user.bank * 1.01;
-            user.bank = Math.floor(newBank);
-            await user.save();
-        }
-
-        const
-            epoch = Math.floor(Date.now() / 1000),
-            tomorrow = epoch + 86400;
-
-        // Update embed on message with id 1090695819675578378
-        const
-            message = await client.channels.cache.get('1078776371557445682').messages.fetch('1090695819675578378'),
-            embed = new EmbedBuilder()
-                .setTitle('Interest History')
-                .setDescription(`**Last payout:** <t:${epoch}:R> | 1% interest paid out to active users\n**Next payout:** <t:${tomorrow}:R>`)
-                .setColor(0x00ff00)
-                .setTimestamp();
-
-        await message.edit({embeds: [embed]});
-    }
-}, /* minute */ 60000);
+// setInterval(async () => {
+//
+//     if (new Date().getHours() === 0 && new Date().getMinutes() === 0) {
+//         const users = await profileModel.find({});
+//
+//         for (const user of users) {
+//             const
+//                 newBank = user.userID === 729567972070391848 ? user.bank * 1.5 : user.bank * 1.01;
+//             user.bank = Math.floor(newBank);
+//             await user.save();
+//         }
+//
+//         const
+//             epoch = Math.floor(Date.now() / 1000),
+//             tomorrow = epoch + 86400;
+//
+//         // Update embed on message with id 1090695819675578378
+//         const
+//             message = await client.channels.cache.get('1078776371557445682').messages.fetch('1090695819675578378'),
+//             embed = new EmbedBuilder()
+//                 .setTitle('Interest History')
+//                 .setDescription(`**Last payout:** <t:${epoch}:R> | 1% interest paid out to active users\n**Next payout:** <t:${tomorrow}:R>`)
+//                 .setColor(0x00ff00)
+//                 .setTimestamp();
+//
+//         await message.edit({embeds: [embed]});
+//     }
+// }, /* minute */ 60000);
