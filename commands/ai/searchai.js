@@ -18,22 +18,22 @@ module.exports = {
 
     async execute(interaction) {
 
-        const profileData = await profileModel.findOne({userID: interaction.user.id});
+        // const profileData = await profileModel.findOne({userID: interaction.user.id});
 
         // Check if the user has enough currency
-        if (profileData.currency < 10000) return interaction.reply({
-            content: "You don't have enough money, you need at least $10,000. Use /work to earn money",
-        });
-
-        else {
-            await profileModel.findOneAndUpdate({
-                userID: interaction.user.id
-            }, {
-                $inc: {
-                    currency: -2500
-                }
-            });
-        }
+        // if (profileData.currency < 10000) return interaction.reply({
+        //     content: "You don't have enough money, you need at least $10,000. Use /work to earn money",
+        // });
+        //
+        // else {
+        //     await profileModel.findOneAndUpdate({
+        //         userID: interaction.user.id
+        //     }, {
+        //         $inc: {
+        //             currency: -2500
+        //         }
+        //     });
+        // }
 
         let
             searchTime = Date.now(),
@@ -58,7 +58,6 @@ module.exports = {
             const
                 article = results.snippets,
                 source = results.links,
-
                 config = {
                     timeout: 15000,
                     method: "POST",

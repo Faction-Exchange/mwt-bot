@@ -8,22 +8,16 @@ const
     client = new Client({
         intents: Object.values(GatewayIntentBits).reduce((a, b) => a | b, 0),
     }),
+    MSG_COOLDOWN = new Set();
     mongoose = require('mongoose');
 let profileModel = require("../models/profileSchema.js");
 const {request} = require("undici");
 
 
-// Cooldowns
-
-const
-    MSG_COOLDOWN = new Set();
-
-// Database
 
 client.on(Events.InteractionCreate, async interaction => {
 
     let profileData;
-
     try {
         profileData = await profileModel.findOne({userID: interaction.user.id});
         if (!profileData) {
@@ -33,7 +27,6 @@ client.on(Events.InteractionCreate, async interaction => {
                 bank: 0,
                 pocket: 1250
             });
-
             await profile.save();
         }
     } catch (err) {
@@ -45,9 +38,7 @@ client.on(Events.InteractionCreate, async interaction => {
         profilePicture = user.avatarURL({format: "png", dynamic: true, size: 1024});
 
     switch (interaction.type) {
-
         case 2:
-
             const command = client.commands.get(interaction.commandName);
             try {
                 report.log(`Executing command ${interaction.commandName} for ${interaction.user.tag} (${interaction.user.id})`);
@@ -55,14 +46,12 @@ client.on(Events.InteractionCreate, async interaction => {
             } catch (error) {
                 report.error(error);
                 await interaction.reply({
-                    content: `There was an error while executing this command! Error: \`\`\`${error.stack}\`\`\``,
-                    ephemeral: true
+                    content: `There was an error while executing this command! This incident has been reported. Error: \`\`\`${error.stack}\`\`\``,
+                    ephemeral: false
                 });
             }
             break;
-
         case 3:
-
             // if starts with join_
             if (interaction.customId.startsWith('join_')) {
                 const invite = interaction.customId.split('_')[1];
@@ -71,10 +60,12 @@ client.on(Events.InteractionCreate, async interaction => {
                     ephemeral: true
                 });
             }
-
+            if (interaction.customId === `slashcommand`) {
+                await interaction.reply({content: 'https://cdn.discordapp.com/attachments/1079127860020772874/1092797554837684314/video-2023-031-16_17.54.39-4.mp4'});
+                break;
+            }
 
             break;
-
         case 5:
             if (interaction.customId === 'factionAdvert') {
                 const
@@ -133,8 +124,7 @@ client.on(Events.InteractionCreate, async interaction => {
                 break;
 
             }
-
-
+            break;
     }
 });
 // Command Location: ../commands/*
@@ -158,34 +148,38 @@ function load_commands(category) {
 
 }
 
-// Log in to Discord with env
+// Log in to Discord with env vars
 client.login(token).then(r =>
     report.log(r)
 ).catch(e =>
     report.error('Failed to log in!', e)
 );
 
-client.once(Events.ClientReady, c => {
+client.once(Events.ClientReady, async c => {
     report.log(`Ready! Logged in as ${c.user.tag}`);
-    report.log("Loading commands...");
+
+    report.log("Connecting to MongoDB...");
+    mongoose.set("strictQuery", true);
+    await mongoose.connect(process.env.MONGODB_SRC, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }).then(() => {
+        report.log('Connected to MongoDB!')
+    })
+        .catch((err) => {
+            report.log('Failed to connect to MongoDB!')
+            report.error(err)
+        })
 
     // Loop through all subfolders in commands
     // and load all commands
-
+    report.log("Loading commands...");
     const categories = fs.readdirSync('../commands/');
     for (const category of categories) {
         load_commands(category);
     }
 });
 
-function updateMemberCount(member) {
-    const
-        memberCount = member.guild.memberCount,
-        memberCountChannelId = '1078740103452688506',
-        memberCountChannel = member.guild.channels.cache.get(memberCountChannelId);
-
-    memberCountChannel.setName(`Members: ${memberCount}`);
-}
 
 client.on('guildMemberAdd', async member => {
 
@@ -260,7 +254,37 @@ client.on('messageCreate', async message => {
 
     if (message.author.bot) return;
 
-    // if user is on timeout
+    if (message.content.toLowerCase().startsWith('!')) {
+
+        const
+            embed = new EmbedBuilder()
+                .setTitle('Faction Exchange Bot is better')
+                .setDescription(
+                    'Consider using the <@1078084068220092496> instead of UnbelievaBoat. It\'s open source and ' +
+                    'has superior functionality. [Join Faction Exchange here](https://discord.gg/PZJTV3fsRq).'
+                );
+            // row = new ActionRowBuilder()
+            //     .addComponents(
+            //         new ButtonBuilder()
+            //             .setCustomId(`join_https://discord.gg/PZJTV3fsRq`)
+            //             .setLabel('Join Faction Exchange')
+            //             .setStyle(ButtonStyle.Primary),
+            //         new ButtonBuilder()
+            //             .setCustomId(`slashcommands`)
+            //             .setLabel('How to use slash commands')
+            //             .setStyle(ButtonStyle.Primary)
+            //     );
+
+
+        // send message
+        const channel = await message.channel.send({content: "Hi", embeds: [embed], components: [row]});
+        await new Promise(resolve => setTimeout(resolve, 30000));
+        channel.delete();
+
+    }
+
+
+    // if the user is on timeout
     if (message.author.id in MSG_COOLDOWN) return;
     // add user to timeout
     MSG_COOLDOWN[message.author.id] = true;
@@ -281,20 +305,9 @@ client.on('messageCreate', async message => {
         {userID: message.author.id},
         {
             $inc: {currency: currency}
-        });
+        }
+    );
 });
-
-mongoose.set("strictQuery", true);
-mongoose.connect(process.env.MONGODB_SRC, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    report.log('Connected to MongoDB!')
-})
-    .catch((err) => {
-        report.log('Failed to connect to MongoDB!')
-        report.error(err)
-    })
 
 process.on('uncaughtException', function (error) {
     console.log(error.stack);

