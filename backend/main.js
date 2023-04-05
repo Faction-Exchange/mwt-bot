@@ -253,43 +253,52 @@ client.on('guildMemberRemove', async member => {
 client.on('messageCreate', async message => {
 
     if (message.author.bot) return;
-
-    if (message.content.toLowerCase().startsWith('!')) {
+    if (message.author.id === "756591292057911446") {
 
         const
+            AUTHOR_IMAGE = message.author.avatarURL({format: "png", dynamic: true, size: 1024}),
             embed = new EmbedBuilder()
-                .setTitle('Faction Exchange Bot is better')
-                .setDescription(
-                    'Consider using the <@1078084068220092496> instead of UnbelievaBoat. It\'s open source and ' +
-                    'has superior functionality. [Join Faction Exchange here](https://discord.gg/PZJTV3fsRq).'
-                );
-            // row = new ActionRowBuilder()
-            //     .addComponents(
-            //         new ButtonBuilder()
-            //             .setCustomId(`join_https://discord.gg/PZJTV3fsRq`)
-            //             .setLabel('Join Faction Exchange')
-            //             .setStyle(ButtonStyle.Primary),
-            //         new ButtonBuilder()
-            //             .setCustomId(`slashcommands`)
-            //             .setLabel('How to use slash commands')
-            //             .setStyle(ButtonStyle.Primary)
-            //     );
+                .setTitle('Lebron Quotes')
+                .setAuthor({
+                    name: message.author.tag,
+                    iconURL: AUTHOR_IMAGE
+                })
+                .setImage(AUTHOR_IMAGE)
+                .setThumbnail(AUTHOR_IMAGE)
+                .setDescription(message.content)
+                .setColor(0x00ff00)
+                .setFooter({
+                    text: `LEBRON QUOTES}`,
+                    iconURL: AUTHOR_IMAGE
+                })
+                .setTimestamp(),
+            channel = await client.channels.fetch('1092065338427985931');
 
+        await channel.send({embeds: [embed]});
+        // react to bots message with 20 random emojis
 
-        // send message
-        const channel = await message.channel.send({content: "Hi", embeds: [embed], components: [row]});
-        await new Promise(resolve => setTimeout(resolve, 30000));
-        channel.delete();
+        const
+            emojis = client.emojis.cache.map(emoji => emoji.id),
+            random_emojis = [];
+
+        for (let i = 0; i < 20; i++) {
+            random_emojis.push(emojis[Math.floor(Math.random() * emojis.length)]);
+        }
+
+        const
+            bot_message = await channel.messages.fetch({limit: 1}),
+            bot_message_id = bot_message.first().id;
+
+        for (const emoji of random_emojis) {
+            bot_message.first().react(emoji);
+        }
+
 
     }
 
-
-    // if the user is on timeout
     if (message.author.id in MSG_COOLDOWN) return;
-    // add user to timeout
     MSG_COOLDOWN[message.author.id] = true;
 
-    // remove user from timeout after 30 seconds
     setTimeout(() => {
         delete MSG_COOLDOWN[message.author.id];
     }, 30000);
